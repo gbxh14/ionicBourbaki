@@ -1,0 +1,7 @@
+{
+  "name": "ionicBourbaki",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
