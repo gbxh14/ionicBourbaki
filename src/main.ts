@@ -4,11 +4,21 @@ import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalo
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getDatabase, provideDatabase } from '@angular/fire/database';
+import { getStorage, provideStorage } from '@angular/fire/storage';
 
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular(),
-    provideRouter(routes, withPreloading(PreloadAllModules)),
-  ],
+    provideRouter(routes, withPreloading(PreloadAllModules)), 
+    provideFirebaseApp(() => initializeApp({"projectId":"ionicbourbaki","appId":"1:190785625594:web:59e970902096bef1311843","storageBucket":"ionicbourbaki.firebasestorage.app","apiKey":"AIzaSyCV4mauu27VeRU4W-bxRLU9s46qEyznlBQ","authDomain":"ionicbourbaki.firebaseapp.com","messagingSenderId":"190785625594","measurementId":"G-YXBY9BQMZK"})), 
+    provideAuth(() => getAuth()), 
+    provideFirestore(() => getFirestore()), 
+    provideDatabase(() => getDatabase()), 
+    provideStorage(() => getStorage()),
+  ]
 });
