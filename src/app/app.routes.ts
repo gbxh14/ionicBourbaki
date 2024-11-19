@@ -3,18 +3,18 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: 'login',
-    loadComponent: () => import('./session/login/login.page').then( m => m.LoginPage)
+    loadComponent: () => import('./session/login/login.page').then(m => m.LoginPage)
   },
   {
     path: 'signup',
-    loadComponent: () => import('./session/signup/signup.page').then( m => m.SignupPage)
+    loadComponent: () => import('./session/signup/signup.page').then(m => m.SignupPage)
   },
   {
     path: 'reset-password',
-    loadComponent: () => import('./session/reset-password/reset-password.page').then( m => m.ResetPasswordPage)
+    loadComponent: () => import('./session/reset-password/reset-password.page').then(m => m.ResetPasswordPage)
   },
   {
-    path:  'tabs',
+    path: 'tabs',
     loadComponent: () => import('./tabs/tabs.page').then(m => m.TabsPage),
     children: [
       {
@@ -28,13 +28,13 @@ export const routes: Routes = [
           import('./songs/songs.page').then((m) => m.SongsPage),
       },
       {
-        path: 'tab3',
+        path: 'bookings',
         loadComponent: () =>
-          import('./tab3/tab3.page').then((m) => m.Tab3Page),
+          import('./bookings/bookings.page').then((m) => m.BookingsPage),
       },
       {
         path: 'home',
-        loadComponent: () => import('./home/home.page').then( m => m.HomePage)
+        loadComponent: () => import('./home/home.page').then(m => m.HomePage)
       },
     ]
   },
@@ -42,5 +42,13 @@ export const routes: Routes = [
     path: '',
     redirectTo: '/login',
     pathMatch: 'full',
+  },
+  {
+    path: 'theatre-booking',
+    loadComponent: () => import('./theatre-booking/theatre-booking.page').then(m => m.TheatreBookingPage)
+  },
+  {
+    path: 'shirt-booking',
+    loadComponent: () => import('./shirt-booking/shirt-booking.page').then(m => m.ShirtBookingPage)
   },
 ];

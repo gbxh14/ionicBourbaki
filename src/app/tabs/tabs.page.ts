@@ -1,7 +1,7 @@
 import { Component, EnvironmentInjector, inject } from '@angular/core';
 import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { musicalNotesOutline, shirtOutline, calendarOutline, homeOutline } from 'ionicons/icons';
+import { musicalNotesOutline, shirtOutline, calendarOutline, homeOutline, ticketOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-tabs',
@@ -14,6 +14,6 @@ export class TabsPage {
   public environmentInjector = inject(EnvironmentInjector);
 
   constructor() {
-    addIcons({ calendarOutline, musicalNotesOutline, shirtOutline, homeOutline });
+    addIcons({ calendarOutline, musicalNotesOutline, ticketOutline, homeOutline, shirtOutline });
   }
 }

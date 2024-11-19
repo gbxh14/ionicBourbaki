@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonTitle, IonToolbar, LoadingController, IonAlert } from '@ionic/angular/standalone';
+import { IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonTitle, IonToolbar, LoadingController, IonAlert, IonInputPasswordToggle } from '@ionic/angular/standalone';
 import { Router, RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { arrowForwardOutline, atCircleOutline, atOutline, lockClosedOutline, personOutline } from 'ionicons/icons';
@@ -34,7 +34,8 @@ import { initializeApp } from 'firebase/app';
     IonItem,
     RouterLink,
     IonFabButton,
-    ReactiveFormsModule]
+    ReactiveFormsModule,
+    IonInputPasswordToggle]
 })
 export class LoginPage implements OnInit {
 

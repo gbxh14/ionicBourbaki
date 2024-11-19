@@ -1,21 +1,18 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonTitle, IonToolbar, LoadingController, IonAlert } from '@ionic/angular/standalone';
+import { IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonTitle, IonToolbar, LoadingController, IonAlert, IonInputPasswordToggle } from '@ionic/angular/standalone';
 import { Router, RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { arrowForwardOutline, atCircleOutline, atOutline, lockClosedOutline, personOutline } from 'ionicons/icons';
+import { arrowForwardOutline, atOutline, lockClosedOutline, personOutline } from 'ionicons/icons';
 import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/services/auth.service';
-import {  } from '@angular/fire/app';
-import {  } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment.prod';
-import { } from '@firebase/auth';
 import { inject, Injectable } from '@angular/core';
-import firebase from 'firebase/compat/app';
-import { Auth } from '@angular/fire/auth';
-import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { initializeApp } from 'firebase/app';
+import { addDoc, collection, Firestore } from '@angular/fire/firestore';
+
 
 @Injectable({
   providedIn: 'root'
@@ -38,9 +35,12 @@ import { initializeApp } from 'firebase/app';
     IonItem,
     RouterLink,
     IonFabButton,
-    ReactiveFormsModule]
+    ReactiveFormsModule,
+    IonInputPasswordToggle]
 })
 export class SignupPage implements OnInit {
+
+  private firestore: Firestore = inject(Firestore);
 
   app = initializeApp(environment.firebase);
   auth = getAuth(this.app);
@@ -74,6 +74,7 @@ export class SignupPage implements OnInit {
               displayName: user.name
             }).then(() => {
               console.log('User registered');
+              this.addUserToDB(user);
               this.route.navigate(['./tabs/home']);
             }).catch((error) => {
               console.log(error);
@@ -92,6 +93,20 @@ export class SignupPage implements OnInit {
     }
   }
 
+  addUserToDB(user: User) {
+    const ref = collection(this.firestore, "User");
+    const userToAdd = {
+      name: user.name,
+      email: user.email
+    };
+    addDoc(ref, userToAdd).then(() => {
+      console.log('User added to DB');
+    }).catch((error) => {
+      console.log(error);
+    });
+
+  }
+
   setOpen(set: boolean) {
     this.isAlertOpen = set;
   }
@@ -106,3 +121,5 @@ export class SignupPage implements OnInit {
   }
 
 }
+
+
