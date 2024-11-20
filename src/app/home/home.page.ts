@@ -39,7 +39,7 @@ export class HomePage implements AfterViewInit, OnDestroy, OnChanges {
   app = initializeApp(environment.firebase);
   auth = getAuth(this.app);
   // Fecha de compilación como version
-  version = '1.0.3';
+  version = '1.0.4';
   title = 'Inicio';
   currentUserName = '';
   currentUserEmail = this.auth.currentUser?.email;

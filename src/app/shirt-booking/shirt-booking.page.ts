@@ -102,10 +102,10 @@ export class ShirtBookingPage implements OnInit {
   setAsPaid() {
     console.log('Reserva actual', this.reservaActual.id);
     let id = this.reservaActual.id;
-    getDoc(doc(this.db, 'Bookings', `reserva_${id}`)).then(res => {
+    getDoc(doc(this.db, 'Bookings', `reserva_camisetas_${id}`)).then(res => {
       if (res.exists()) {
         // Actualizamos el documento: pagado = true
-        const bookingToUpdate = doc(this.db, 'Bookings', `reserva_${id}`);
+        const bookingToUpdate = doc(this.db, 'Bookings', `reserva_camisetas_${id}`);
         updateDoc(bookingToUpdate, {
           paid: true
         });
@@ -117,10 +117,10 @@ export class ShirtBookingPage implements OnInit {
   setAsCollected() {
     console.log('Reserva actual', this.reservaActual.id);
     let id = this.reservaActual.id;
-    getDoc(doc(this.db, 'Bookings', `reserva_${id}`)).then(res => {
+    getDoc(doc(this.db, 'Bookings', `reserva_camisetas_${id}`)).then(res => {
       if (res.exists()) {
         // Actualizamos el documento: pagado = true
-        const bookingToUpdate = doc(this.db, 'Bookings', `reserva_${id}`);
+        const bookingToUpdate = doc(this.db, 'Bookings', `reserva_camisetas_${id}`);
         updateDoc(bookingToUpdate, {
           collected: true
         });

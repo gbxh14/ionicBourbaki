@@ -59,6 +59,7 @@ export class TheatreBookingPage implements OnInit {
       type: 'theatre-booking',
       quantity: this.ticketsForm.value.numberOfTickets,
       validated: false,
+      id: booking_id,
     };
 
     setDoc(doc(this.db, 'Bookings', `reserva_tickets_${booking_id}`), booking).then(() => {
@@ -120,7 +121,17 @@ export class TheatreBookingPage implements OnInit {
 
         // Busco las entradas asociadas a ese email
         const tickets = this.allTicketsBookings.filter(t => t.user === this.scanResult);
-        this.totalTicketsOfUser = tickets.length;
+        let id = tickets[0].id;
+        getDoc(doc(this.db, 'Bookings', `reserva_tickets_${id}`)).then(res => {
+          if (res.exists()) {
+            // Actualizamos el documento: validadas = true
+            const bookingToUpdate = doc(this.db, 'Bookings', `reserva_tickets_${id}`);
+            updateDoc(bookingToUpdate, {
+              validated: true
+            });
+          }
+        });
+        this.totalTicketsOfUser = tickets[0].quantity;
         BarcodeScanner.showBackground();
         document.querySelector('body')?.classList.remove('scanner-active');
         console.log('Scan result', this.scanResult);
