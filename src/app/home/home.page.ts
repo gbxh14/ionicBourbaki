@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonTitle, IonToolbar, IonModal, IonButtons, IonButton, IonLabel, IonList, IonListHeader } from '@ionic/angular/standalone';
@@ -34,7 +34,7 @@ import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
     IonItem,
     QRCodeModule]
 })
-export class HomePage implements AfterViewInit {
+export class HomePage implements AfterViewInit, OnDestroy, OnChanges {
 
   app = initializeApp(environment.firebase);
   auth = getAuth(this.app);
@@ -42,6 +42,7 @@ export class HomePage implements AfterViewInit {
   version = '1.0.2';
   title = 'Inicio';
   currentUserName = '';
+  currentUserEmail = this.auth.currentUser?.email;
   isModalOpen = false;
   isQrOpen = false;
 
@@ -62,12 +63,18 @@ export class HomePage implements AfterViewInit {
     console.log('Nombre de usuario actual', this.currentUserName);
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    this.currentUserName = this.auth.currentUser?.displayName || '';
+    console.log('Nombre de usuario actual', this.currentUserName);
+  }
+
   ngOnDestroy(): void {
     this.stopScan();
   }
 
   onSignOut() {
     signOut(this.auth).then(() => {
+      this.currentUserName = '';
       this.route.navigate(['./login']);
     }).catch((error) => {
       console.error('Error al cerrar sesión', error);

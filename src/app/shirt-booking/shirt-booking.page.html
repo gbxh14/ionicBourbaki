@@ -36,7 +36,7 @@
             </ion-select>
           </ion-item>
           <ion-item>
-            <ion-input type="number" label="Cantidad" required formControlName="quantity"></ion-input>
+            <ion-input type="number" label="Cantidad" required formControlName="quantity" placeholder="0"></ion-input>
           </ion-item>
           <ion-button expand="block" (click)="this.addBooking()" style="margin-top: 10px;"
             [disabled]="this.bookingForm.invalid">Reservar</ion-button>
@@ -49,6 +49,8 @@
 <ion-toast [isOpen]="isToastOpen" message="Pedido realizado correctamente" [duration]="3000"
   (didDismiss)="setToastOpen(false)"></ion-toast>
 }
+
+<!-- Para usuario ADMIN -->
 @if(this.currentUserEmail === 'admin@admin.es') {
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
@@ -61,13 +63,25 @@
     <ion-breadcrumb>Reserva de camisetas</ion-breadcrumb>
   </ion-breadcrumbs>
   <h6 class="info">Lista de todas las reservas que se han hecho</h6>
-
+  <form [formGroup]="this.filterForm">
+    <div class="filters">
+      <ion-item>
+        <ion-label position="floating">Filtrar por </ion-label>
+        <ion-select placeholder="Estado del pago" interface="action-sheet" (ionChange)="filterByPaymentStatus()"
+          formControlName="paid">
+          <ion-select-option [value]="null">Cualquiera</ion-select-option>
+          <ion-select-option [value]="false">Sin pagar</ion-select-option>
+          <ion-select-option [value]="true">Pagado</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+  </form>
   <ion-card>
     <ion-card-content>
       <ion-list>
         @for (reserva of this.allShirtBookings; track $index) {
         <ion-item>
-          <ion-badge slot="end">{{reserva.quantity}}€</ion-badge>
+          <ion-badge slot="end">{{reserva.quantity}}</ion-badge>
           <ion-label (click)="setModalOpen(true, reserva)">
             <h2>{{reserva.user}}</h2>
           </ion-label>
@@ -107,8 +121,12 @@
       </ion-item>
       <ion-item>
         <ion-icon name="prayer-outline" slot="start"></ion-icon>
-        <ion-label>Total a pagar: {{reservaActual.price}}</ion-label>
+        <ion-label>Total a pagar: {{reservaActual.paid ? 'Ya pagadao' : reservaActual.price}}</ion-label>
       </ion-item>
+      <ion-button expand="block" (click)="this.setAsPaid()" style="margin-top: 10px;"
+        [disabled]="this.reservaActual.paid === true">Marcar como pagado</ion-button>
+      <ion-button expand="block" (click)="this.setAsCollected()" style="margin-top: 10px;"
+        [disabled]="this.reservaActual.collected === true">Marcar como entregado</ion-button>
     </ion-content>
 
   </ng-template>

@@ -42,11 +42,13 @@
     </ion-fab-button>
   </ion-fab>
 
+  @if(this.currentUserEmail === 'admin@admin.es') {
   <ion-fab vertical="bottom" horizontal="start" slot="fixed" style="margin:20px;">
     <ion-fab-button (click)="startScan()">
       <ion-icon name="scan-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+  }
 </ion-content>
 
 <ion-modal [isOpen]="isModalOpen">

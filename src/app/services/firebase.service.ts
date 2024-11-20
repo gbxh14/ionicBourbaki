@@ -36,4 +36,7 @@ export class FirestoreService {
     });
   }
 
+  getBookingId(booking: string) {
+  }
+
 }
