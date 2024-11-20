@@ -12,6 +12,31 @@ import { add, scanOutline } from 'ionicons/icons';
 import { update } from '@angular/fire/database';
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 import { addIcons } from 'ionicons';
+import { NativeAudio } from '@capacitor-community/native-audio'
+
+NativeAudio.preload({
+  assetId: "access-granted",
+  assetPath: "access_granted.mp3",
+  audioChannelNum: 1,
+  isUrl: false
+})
+
+NativeAudio.setVolume({
+  assetId: 'access-granted',
+  volume: 1,
+});
+
+NativeAudio.preload({
+  assetId: "access-denied",
+  assetPath: "access_denied.mp3",
+  audioChannelNum: 1,
+  isUrl: false
+})
+
+NativeAudio.setVolume({
+  assetId: 'access-denied',
+  volume: 1,
+});
 
 @Component({
   selector: 'app-theatre-booking',
@@ -39,7 +64,7 @@ export class TheatreBookingPage implements OnInit {
   ticketsForm!: FormGroup;
 
   constructor(
-    private firestoreService: FirestoreService
+    private firestoreService: FirestoreService,
   ) {
     addIcons({ scanOutline });
   }
@@ -124,11 +149,18 @@ export class TheatreBookingPage implements OnInit {
         let id = tickets[0].id;
         getDoc(doc(this.db, 'Bookings', `reserva_tickets_${id}`)).then(res => {
           if (res.exists()) {
-            // Actualizamos el documento: validadas = true
-            const bookingToUpdate = doc(this.db, 'Bookings', `reserva_tickets_${id}`);
-            updateDoc(bookingToUpdate, {
-              validated: true
-            });
+            if (res.data()['validated'] === true) {
+              console.log('La entrada ya ha sido validada');
+              NativeAudio.play({ assetId: "access-denied" });
+            }
+            else {
+              // Actualizamos el documento: validadas = true
+              NativeAudio.play({ assetId: "access-granted" });
+              const bookingToUpdate = doc(this.db, 'Bookings', `reserva_tickets_${id}`);
+              updateDoc(bookingToUpdate, {
+                validated: true
+              });
+            }
           }
         });
         this.totalTicketsOfUser = tickets[0].quantity;
