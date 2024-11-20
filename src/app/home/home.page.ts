@@ -39,7 +39,7 @@ export class HomePage implements AfterViewInit, OnDestroy, OnChanges {
   app = initializeApp(environment.firebase);
   auth = getAuth(this.app);
   // Fecha de compilación como version
-  version = '1.0.2';
+  version = '1.0.3';
   title = 'Inicio';
   currentUserName = '';
   currentUserEmail = this.auth.currentUser?.email;
@@ -97,8 +97,7 @@ export class HomePage implements AfterViewInit, OnDestroy, OnChanges {
 
   setQrInfo() {
     this.firestoreService.getCollectionChanges<User[]>('User').subscribe(result => {
-      const user = result.find(user => user.email === this.auth.currentUser?.email);
-      this.qrInfo = `${user?.name ?? ''}`;
+      this.qrInfo = this.auth.currentUser?.email ?? '';
       console.log('QR Info', this.qrInfo);
     });
   }

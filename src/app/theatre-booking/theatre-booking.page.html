@@ -1,13 +1,57 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>theatre-booking</ion-title>
+    <ion-title>{{title}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">theatre-booking</ion-title>
+      <ion-title size="large">{{title}}</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-breadcrumbs style="padding: 5px;">
+    <ion-breadcrumb href="../tabs/bookings">Reservas</ion-breadcrumb>
+    <ion-breadcrumb>Teatro y entrega de premios</ion-breadcrumb>
+  </ion-breadcrumbs>
+  @if(this.currentUserEmail !== 'admin@admin.es'){
+  <h6 class="info">Reserva hasta un máximo de 5 entradas para la obra de teatro y la entrega de los premios alpha y beta
+  </h6>
+  <div class="shirt-form">
+    <form [formGroup]="this.ticketsForm">
+      <ion-card>
+        <ion-card-content>
+          <ion-item>
+            <ion-select placeholder="Número de entradas" label="Número de entradas" okText="Seleccionar"
+              cancelText="Cancelar" formControlName="numberOfTickets">
+              <ion-select-option value=1>1</ion-select-option>
+              <ion-select-option value=2>2</ion-select-option>
+              <ion-select-option value=3>3</ion-select-option>
+              <ion-select-option value=4>4</ion-select-option>
+              <ion-select-option value=5>5</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-button expand="block" style="margin-top: 10px;" [disabled]="this.ticketsForm.invalid"
+            (click)="bookTickets()">Reservar</ion-button>
+        </ion-card-content>
+      </ion-card>
+    </form>
+  </div>
+  <ion-toast [isOpen]="isToastOpen" message="Entradas reservadas correctamente" [duration]="3000"
+    (didDismiss)="setToastOpen(false)"></ion-toast>
+  }
+  @if(this.currentUserEmail === 'admin@admin.es'){
+  <h6 class="info">Escanea los códigos QR de las entradas para validarlas</h6>
+  @if(this.scanResult !== ''){
+  <div class="total-tickets-by-user">
+    Entradas reservadas por {{this.scanResult}}:
+    <p style="font-size: 40px;">{{this.totalTicketsOfUser}}</p>
+  </div>
+  }
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed" style="margin:20px;">
+    <ion-fab-button (click)="startScan()">
+      <ion-icon name="scan-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  }
 </ion-content>

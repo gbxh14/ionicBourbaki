@@ -12,7 +12,7 @@
   </ion-header>
   <ion-breadcrumbs style="padding: 5px;">
     <ion-breadcrumb href="../tabs/bookings">Reservas</ion-breadcrumb>
-    <ion-breadcrumb>Reserva de camisetas</ion-breadcrumb>
+    <ion-breadcrumb>Camisetas de Bourbaki</ion-breadcrumb>
   </ion-breadcrumbs>
   <h6 class="info">Debes realizar una reserva por cada combinación color/cantidad/talla que quieras</h6>
   <div class="shirt-form">
@@ -65,10 +65,10 @@
   <h6 class="info">Lista de todas las reservas que se han hecho</h6>
   <form [formGroup]="this.filterForm">
     <div class="filters">
-      <ion-item>
-        <ion-label position="floating">Filtrar por </ion-label>
+      <ion-item style="width: 100%;">
+        <ion-label position="floating">Filtrar por estado de pago</ion-label>
         <ion-select placeholder="Estado del pago" interface="action-sheet" (ionChange)="filterByPaymentStatus()"
-          formControlName="paid">
+          formControlName="paid" style="width: 100%">
           <ion-select-option [value]="null">Cualquiera</ion-select-option>
           <ion-select-option [value]="false">Sin pagar</ion-select-option>
           <ion-select-option [value]="true">Pagado</ion-select-option>

@@ -1,20 +1,152 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonBreadcrumb, IonBreadcrumbs, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonSelect, IonSelectOption, IonInput, IonButton, IonToast, IonIcon, IonList, IonModal, IonButtons, IonBadge, IonFab, IonFabButton } from '@ionic/angular/standalone';
+import { AvailableBooking } from '../models/availableBooking.model';
+import { FirestoreService } from '../services/firebase.service';
+import { addDoc, collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc } from '@angular/fire/firestore';
+import { environment } from 'src/environments/environment.prod';
+import { initializeApp } from '@angular/fire/app';
+import { getAuth } from '@angular/fire/auth';
+import { add, scanOutline } from 'ionicons/icons';
+import { update } from '@angular/fire/database';
+import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
+import { addIcons } from 'ionicons';
 
 @Component({
   selector: 'app-theatre-booking',
   templateUrl: './theatre-booking.page.html',
   styleUrls: ['./theatre-booking.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonFabButton, IonFab, IonIcon, ReactiveFormsModule, IonToast, IonButton, IonSelect, IonSelectOption, IonItem, IonCardContent, IonCard, IonBreadcrumb, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonBreadcrumbs]
 })
 export class TheatreBookingPage implements OnInit {
 
-  constructor() { }
+  title = 'Entradas para la gala';
+
+  app = initializeApp(environment.firebase);
+  auth = getAuth(this.app);
+  db = getFirestore(this.app)
+
+  isToastOpen = false;
+  allTicketsBookings: any[] = [];
+
+  currentUserEmail = this.auth.currentUser?.email;
+  totalTicketsOfUser = 0;
+
+  scanResult = '';
+
+  ticketsForm!: FormGroup;
+
+  constructor(
+    private firestoreService: FirestoreService
+  ) {
+    addIcons({ scanOutline });
+  }
 
   ngOnInit() {
+    this.buildTicketsForm();
+    this.getAllTicketsBookings();
+  }
+
+  bookTickets() {
+    console.log('Reservando entradas');
+    console.log(this.ticketsForm.value);
+
+    const booking_id = this.allTicketsBookings.length + 1;
+    const booking = {
+      user: this.currentUserEmail,
+      type: 'theatre-booking',
+      quantity: this.ticketsForm.value.numberOfTickets,
+      validated: false,
+    };
+
+    setDoc(doc(this.db, 'Bookings', `reserva_tickets_${booking_id}`), booking).then(() => {
+      console.log('Reserva añadida correctamente');
+      this.setToastOpen(true);
+      this.ticketsForm.reset();
+    }).catch(err => {
+      console.error('Error al añadir la reserva', err);
+    });
+  }
+
+  setToastOpen(open: boolean) {
+    this.isToastOpen = open;
+  }
+
+  getAllTicketsBookings(paid?: boolean) {
+    this.firestoreService.getCollectionChanges<any[]>('Bookings').subscribe(result => {
+      let aux = result.filter(r => r.type === 'theatre-booking')
+      if (paid !== undefined) {
+        aux = aux.filter(r => r.paid === paid);
+      }
+      this.allTicketsBookings = aux;
+    });
+
+  }
+
+  // CÓDIGO PARA EL ESCANEO DE QR
+  async checkPermission() {
+    try {
+      const status = await BarcodeScanner.checkPermission({ force: true });
+      if (status.granted) {
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  }
+
+  async startScan() {
+    console.log('Starting scan');
+    try {
+      const permission = await this.checkPermission();
+      if (!permission) {
+        return;
+      }
+      await BarcodeScanner.hideBackground();
+      const body = document.querySelector('body');
+      if (body) {
+        body.classList.add('scanner-active');
+      }
+      const result = await BarcodeScanner.startScan();
+      console.log('Scanned', result);
+      if (result.hasContent) {
+        this.scanResult = result.content;
+        // Aquí se puede hacer algo con el resultado del escaneo
+        // Si el escaneo ha ido bien, me devuelve el email del usuario
+
+        // Busco las entradas asociadas a ese email
+        const tickets = this.allTicketsBookings.filter(t => t.user === this.scanResult);
+        this.totalTicketsOfUser = tickets.length;
+        BarcodeScanner.showBackground();
+        document.querySelector('body')?.classList.remove('scanner-active');
+        console.log('Scan result', this.scanResult);
+      }
+    } catch (err) {
+      console.error(err);
+      this.stopScan();
+    }
+  }
+
+  stopScan() {
+    BarcodeScanner.showBackground();
+    BarcodeScanner.stopScan().then(() => {
+      const body = document.querySelector('body');
+      if (body) {
+        body.classList.remove('scanner-active');
+      }
+    });
+  }
+
+
+
+  private buildTicketsForm() {
+    this.ticketsForm = new FormGroup({
+      numberOfTickets: new FormControl<string>('', [Validators.required]),
+    });
   }
 
 }

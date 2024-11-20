@@ -1,6 +1,6 @@
 import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonBreadcrumb, IonBreadcrumbs, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonSelect, IonSelectOption, IonInput, IonButton, IonToast, IonIcon, IonList, IonModal, IonButtons, IonBadge } from '@ionic/angular/standalone';
 import { AvailableBooking } from '../models/availableBooking.model';
 import { FirestoreService } from '../services/firebase.service';
@@ -42,7 +42,7 @@ export class ShirtBookingPage implements OnInit {
   filterForm!: FormGroup;
 
   constructor(
-    private firestoreService: FirestoreService
+    private firestoreService: FirestoreService,
   ) { }
 
   ngOnInit() {
@@ -88,7 +88,7 @@ export class ShirtBookingPage implements OnInit {
       id: booking_id
     };
     console.log('Reserva', booking);
-    setDoc(doc(this.db, 'Bookings', `reserva_${booking_id}`), booking).then(() => {
+    setDoc(doc(this.db, 'Bookings', `reserva_camisetas_${booking_id}`), booking).then(() => {
       console.log('Reserva añadida correctamente');
       this.setToastOpen(true);
       this.bookingForm.reset();
