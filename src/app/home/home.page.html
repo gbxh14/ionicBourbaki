@@ -22,11 +22,11 @@
     </ion-item>
     <ion-item>
       <ion-icon aria-hidden="true" name="bag-outline" slot="start"></ion-icon>
-      <ion-label>Mis pedidos</ion-label>
+      <ion-label (click)="goToPage('my-bookings')">Mis pedidos</ion-label>
     </ion-item>
     <ion-item>
       <ion-icon aria-hidden="true" name="ticket-outline" slot="start"></ion-icon>
-      <ion-label>Mis entradas</ion-label>
+      <ion-label (click)="goToPage('my-tickets')">Mis entradas</ion-label>
     </ion-item>
     <ion-item>
       <ion-icon aria-hidden="true" name="qr-code-outline" slot="start"></ion-icon>
@@ -34,21 +34,11 @@
     </ion-item>
   </ion-list>
 
-  <p class="linea-texto">Has escaneado el código de {{scanResult}}</p>
-
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" style="margin:20px;">
     <ion-fab-button (click)="onSignOut()">
       <ion-icon name="exit-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
-  @if(this.currentUserEmail === 'admin@admin.es') {
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed" style="margin:20px;">
-    <ion-fab-button (click)="startScan()">
-      <ion-icon name="scan-outline"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-  }
 </ion-content>
 
 <ion-modal [isOpen]="isModalOpen">

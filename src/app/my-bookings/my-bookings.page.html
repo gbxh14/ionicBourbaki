@@ -1,0 +1,85 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>{{title}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{title}}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-breadcrumbs style="padding: 5px;">
+    <ion-breadcrumb href="../tabs/home">Inicio</ion-breadcrumb>
+    <ion-breadcrumb>{{title}}</ion-breadcrumb>
+  </ion-breadcrumbs>
+  <ion-card>
+    <ion-card-content>
+      <ion-list>
+        @for (reserva of this.myBookings; track $index) {
+        <ion-item>
+          <ion-label (click)="setModalOpen(true,reserva)">
+            <h2>{{this.transaleType(reserva.type)}}</h2>
+          </ion-label>
+        </ion-item>
+        }
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<ion-modal [isOpen]="isModalOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Detalles de la reserva</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="setModalOpen(false, null)" [strong]="true">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-item>
+        <ion-icon slot="start"></ion-icon>
+        <ion-label>Tipo: {{this.transaleType(reservaActual.type)}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start"></ion-icon>
+        <ion-label>Fecha: {{reservaActual.date}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start"></ion-icon>
+        <ion-label>Precio: {{reservaActual.price}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start"></ion-icon>
+        <ion-label>Pagado: {{reservaActual.paid ? 'Sí' : 'No'}}</ion-label>
+      </ion-item>
+      @if(reservaActual.type === 'shirt-booking') {
+      <ion-item>
+        <ion-icon slot="start"></ion-icon>
+        <ion-label>Cantidad: {{reservaActual.quantity}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start"></ion-icon>
+        <ion-label>Color: {{reservaActual.color}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start"></ion-icon>
+        <ion-label>Talla: {{reservaActual.size}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start"></ion-icon>
+        <ion-label>Recogido: {{reservaActual.collected ? 'Sí' : 'No'}}</ion-label>
+      </ion-item>
+      } @else if(reservaActual.type === 'bourbaki-food-booking') {
+      <ion-item>
+        <ion-icon slot="start"></ion-icon>
+        <ion-label>Comida: {{reservaActual.food}}</ion-label>
+      </ion-item>
+      }
+    </ion-content>
+
+  </ng-template>
+</ion-modal>

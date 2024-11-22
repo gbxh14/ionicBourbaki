@@ -50,5 +50,13 @@ export const routes: Routes = [
   {
     path: 'shirt-booking',
     loadComponent: () => import('./shirt-booking/shirt-booking.page').then(m => m.ShirtBookingPage)
+  },  {
+    path: 'my-tickets',
+    loadComponent: () => import('./my-tickets/my-tickets.page').then( m => m.MyTicketsPage)
   },
+  {
+    path: 'my-bookings',
+    loadComponent: () => import('./my-bookings/my-bookings.page').then( m => m.MyBookingsPage)
+  },
+
 ];

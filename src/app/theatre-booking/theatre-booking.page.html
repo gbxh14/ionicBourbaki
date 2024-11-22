@@ -14,7 +14,7 @@
     <ion-breadcrumb href="../tabs/bookings">Reservas</ion-breadcrumb>
     <ion-breadcrumb>Teatro y entrega de premios</ion-breadcrumb>
   </ion-breadcrumbs>
-  @if(this.currentUserEmail !== 'admin@admin.es'){
+  @if(this.currentUserEmail !== 'admin@admin.es' && this.myTickets.length === 0){
   <h6 class="info">Reserva hasta un máximo de 5 entradas para la obra de teatro y la entrega de los premios alpha y beta
   </h6>
   <div class="shirt-form">
@@ -39,6 +39,18 @@
   </div>
   <ion-toast [isOpen]="isToastOpen" message="Entradas reservadas correctamente" [duration]="3000"
     (didDismiss)="setToastOpen(false)"></ion-toast>
+  }
+  @if(this.currentUserEmail !== 'admin@admin.es' && this.myTickets.length > 0){
+  <div class="no-more-tickets">
+    <ion-card>
+      <ion-card-content>
+        <h6 class="info">Ya has reservado tus entradas</h6>
+        <div class="links">
+          <a href="my-tickets">Ver mis entradas</a>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
   }
   @if(this.currentUserEmail === 'admin@admin.es'){
   <h6 class="info">Escanea los códigos QR de las entradas para validarlas</h6>
