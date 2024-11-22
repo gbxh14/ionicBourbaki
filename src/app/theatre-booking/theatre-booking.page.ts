@@ -58,6 +58,7 @@ export class TheatreBookingPage implements OnInit {
 
   currentUserEmail = this.auth.currentUser?.email;
   totalTicketsOfUser = 0;
+  myTickets: any[] = [];
 
   scanResult = '';
 
@@ -72,6 +73,8 @@ export class TheatreBookingPage implements OnInit {
   ngOnInit() {
     this.buildTicketsForm();
     this.getAllTicketsBookings();
+    this.getAllMyBookings();
+    NativeAudio.play({ assetId: "access-granted" });
   }
 
   bookTickets() {
@@ -111,6 +114,16 @@ export class TheatreBookingPage implements OnInit {
 
   }
 
+  getAllMyBookings() {
+    this.firestoreService.getCollectionChanges<any[]>('Bookings').subscribe(result => {
+      console.log(result);
+      console.log('Busca', this.currentUserEmail);
+      let aux = result.filter(r => (r.type === 'theatre-booking'));
+      aux = aux.filter(r => r.user === this.currentUserEmail);
+      console.log(aux);
+      this.myTickets = aux;
+    });
+  }
   // CÓDIGO PARA EL ESCANEO DE QR
   async checkPermission() {
     try {

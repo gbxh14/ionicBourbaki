@@ -34,7 +34,7 @@ import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
     IonItem,
     QRCodeModule]
 })
-export class HomePage implements AfterViewInit, OnDestroy, OnChanges {
+export class HomePage implements AfterViewInit, OnChanges {
 
   app = initializeApp(environment.firebase);
   auth = getAuth(this.app);
@@ -68,10 +68,6 @@ export class HomePage implements AfterViewInit, OnDestroy, OnChanges {
     console.log('Nombre de usuario actual', this.currentUserName);
   }
 
-  ngOnDestroy(): void {
-    this.stopScan();
-  }
-
   onSignOut() {
     signOut(this.auth).then(() => {
       this.currentUserName = '';
@@ -102,53 +98,8 @@ export class HomePage implements AfterViewInit, OnDestroy, OnChanges {
     });
   }
 
-  async checkPermission() {
-    try {
-      const status = await BarcodeScanner.checkPermission({ force: true });
-      if (status.granted) {
-        return true;
-      }
-      return false;
-    } catch (err) {
-      console.error(err);
-      return false;
-    }
-  }
-
-  async startScan() {
-    console.log('Starting scan');
-    try {
-      const permission = await this.checkPermission();
-      if (!permission) {
-        return;
-      }
-      await BarcodeScanner.hideBackground();
-      const body = document.querySelector('body');
-      if (body) {
-        body.classList.add('scanner-active');
-      }
-      const result = await BarcodeScanner.startScan();
-      console.log('Scanned', result);
-      if (result.hasContent) {
-        this.scanResult = result.content;
-        BarcodeScanner.showBackground();
-        document.querySelector('body')?.classList.remove('scanner-active');
-        console.log('Scan result', this.scanResult);
-      }
-    } catch (err) {
-      console.error(err);
-      this.stopScan();
-    }
-  }
-
-  stopScan() {
-    BarcodeScanner.showBackground();
-    BarcodeScanner.stopScan().then(() => {
-      const body = document.querySelector('body');
-      if (body) {
-        body.classList.remove('scanner-active');
-      }
-    });
+  goToPage(url: string) {
+    this.route.navigate([url]);
   }
 
   private splitByDoubleSpaces(text: string) {
