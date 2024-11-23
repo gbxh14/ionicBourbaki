@@ -20,6 +20,7 @@
       <ion-icon aria-hidden="true" name="chatbubble-ellipses-outline" slot="start"></ion-icon>
       <ion-label (click)="setOpen(true)">Rogativas</ion-label>
     </ion-item>
+    @if(this.currentUserEmail !== 'admin@admin.es'){
     <ion-item>
       <ion-icon aria-hidden="true" name="bag-outline" slot="start"></ion-icon>
       <ion-label (click)="goToPage('my-bookings')">Mis pedidos</ion-label>
@@ -32,6 +33,7 @@
       <ion-icon aria-hidden="true" name="qr-code-outline" slot="start"></ion-icon>
       <ion-label (click)="setQrOpen(true)">Mi QR</ion-label>
     </ion-item>
+    }
   </ion-list>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" style="margin:20px;">

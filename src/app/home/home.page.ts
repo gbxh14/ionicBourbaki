@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonTitle, IonToolbar, IonModal, IonButtons, IonButton, IonLabel, IonList, IonListHeader } from '@ionic/angular/standalone';
@@ -34,15 +34,16 @@ import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
     IonItem,
     QRCodeModule]
 })
-export class HomePage implements AfterViewInit, OnChanges {
+export class HomePage implements AfterViewInit, OnInit {
 
   app = initializeApp(environment.firebase);
   auth = getAuth(this.app);
+
   // Fecha de compilación como version
-  version = '1.0.4';
+  version = '1.0.5';
   title = 'Inicio';
   currentUserName = '';
-  currentUserEmail = this.auth.currentUser?.email;
+  currentUserEmail = '';
   isModalOpen = false;
   isQrOpen = false;
 
@@ -58,15 +59,18 @@ export class HomePage implements AfterViewInit, OnChanges {
     addIcons({ chatbubbleEllipsesOutline, bagOutline, ticketOutline, qrCodeOutline, exitOutline, scanOutline, airplane, arrowForwardOutline });
   }
 
-  ngAfterViewInit(): void {
-    this.currentUserName = this.auth.currentUser?.displayName || '';
-    console.log('Nombre de usuario actual', this.currentUserName);
+  ngOnInit(): void {
+    console.log(this.auth.currentUser);
+    this.currentUserEmail = this.auth.currentUser?.email || '';
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngAfterViewInit(): void {
     this.currentUserName = this.auth.currentUser?.displayName || '';
+    this.currentUserEmail = this.auth.currentUser?.email || '';
     console.log('Nombre de usuario actual', this.currentUserName);
+    console.log('Email de usuario actual', this.currentUserEmail);
   }
+
 
   onSignOut() {
     signOut(this.auth).then(() => {

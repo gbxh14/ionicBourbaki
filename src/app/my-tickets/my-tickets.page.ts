@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonBreadcrumb, IonBreadcrumbs, IonCard, IonCardContent, IonList, IonItem, IonLabel, IonIcon, IonModal, IonButtons, IonButton } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonBreadcrumb, IonBreadcrumbs, IonCard, IonCardContent, IonList, IonItem, IonLabel, IonIcon, IonModal, IonButtons, IonButton, IonBadge } from '@ionic/angular/standalone';
 import { initializeApp } from '@angular/fire/app';
 import { getAuth } from '@angular/fire/auth';
 import { getFirestore } from '@angular/fire/firestore';
@@ -13,7 +13,7 @@ import { FirestoreService } from '../services/firebase.service';
   templateUrl: './my-tickets.page.html',
   styleUrls: ['./my-tickets.page.scss'],
   standalone: true,
-  imports: [IonButton, IonButtons, IonModal, IonIcon, IonLabel, IonItem, IonList, IonCardContent, IonCard, IonBreadcrumb, IonBreadcrumbs, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonBadge, IonButton, IonButtons, IonModal, IonIcon, IonLabel, IonItem, IonList, IonCardContent, IonCard, IonBreadcrumb, IonBreadcrumbs, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
 })
 export class MyTicketsPage implements OnInit {
 

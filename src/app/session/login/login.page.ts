@@ -69,7 +69,8 @@ export class LoginPage implements OnInit {
       signInWithEmailAndPassword(this.auth, userToLogin.email, userToLogin.password)
         .then((userCredential) => {
           this.showLoading()
-          console.log('Signed in');
+          console.log(userCredential);
+          console.log('Signed in as ' + userCredential.user?.email);
           this.route.navigate(['./tabs/home']);
           // ...
         })

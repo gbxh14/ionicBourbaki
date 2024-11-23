@@ -19,6 +19,10 @@
       <ion-list>
         @for (reserva of this.myBookings; track $index) {
         <ion-item>
+          <ion-badge slot="end" [ngStyle]="{'--background' : reserva.paid ? 'green' : 'red'}"><ion-icon
+              name="cash-outline"></ion-icon></ion-badge>
+          <ion-badge slot="end" [ngStyle]="{'--background' : reserva.collected ? 'green' : 'red'}"
+            style="margin-left:5px"><ion-icon name="archive-outline"></ion-icon></ion-badge>
           <ion-label (click)="setModalOpen(true,reserva)">
             <h2>{{this.transaleType(reserva.type)}}</h2>
           </ion-label>
@@ -54,7 +58,8 @@
       </ion-item>
       <ion-item>
         <ion-icon slot="start"></ion-icon>
-        <ion-label>Pagado: {{reservaActual.paid ? 'Sí' : 'No'}}</ion-label>
+        <ion-badge slot="start" [ngStyle]="{'--background' : reservaActual.paid ? 'green' : 'red'}">{{reservaActual.paid
+          ? 'Pagado' : 'No pagado'}}</ion-badge>
       </ion-item>
       @if(reservaActual.type === 'shirt-booking') {
       <ion-item>
@@ -71,7 +76,9 @@
       </ion-item>
       <ion-item>
         <ion-icon slot="start"></ion-icon>
-        <ion-label>Recogido: {{reservaActual.collected ? 'Sí' : 'No'}}</ion-label>
+        <ion-badge slot="start"
+          [ngStyle]="{'--background' : reservaActual.collected ? 'green' : 'red'}">{{reservaActual.collected
+          ? 'Entregado' : 'No entregado'}}</ion-badge>
       </ion-item>
       } @else if(reservaActual.type === 'bourbaki-food-booking') {
       <ion-item>

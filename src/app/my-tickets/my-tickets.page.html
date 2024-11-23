@@ -19,6 +19,8 @@
       <ion-list>
         @for (reserva of this.myTickets; track $index) {
         <ion-item>
+          <ion-badge slot="end" [ngStyle]="{ '--background' : reserva.validated ? 'red' : 'green' }">{{reserva.validated
+            ? 'Validadas' : 'Sin validar'}}</ion-badge>
           <ion-label (click)="setModalOpen(true,reserva)">
             <h2>{{this.transaleType(reserva.type)}}</h2>
           </ion-label>
@@ -50,7 +52,9 @@
       </ion-item>
       <ion-item>
         <ion-icon slot="start"></ion-icon>
-        <ion-label>Validadas: {{reservaActual.validated ? 'Sí' : 'No'}}</ion-label>
+        <ion-badge slot="start"
+          [ngStyle]="{ '--background' : reservaActual.validated ? 'red' : 'green' }">{{reservaActual.validated
+          ? 'Validadas' : 'Sin validar'}}</ion-badge>
       </ion-item>
     </ion-content>
 

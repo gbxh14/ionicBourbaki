@@ -81,7 +81,10 @@
       <ion-list>
         @for (reserva of this.allShirtBookings; track $index) {
         <ion-item>
-          <ion-badge slot="end">{{reserva.quantity}}</ion-badge>
+          <ion-badge slot="end" [ngStyle]="{'--background' : reserva.paid ? 'green' : 'red'}"><ion-icon
+              name="cash-outline"></ion-icon></ion-badge>
+          <ion-badge slot="end" [ngStyle]="{'--background' : reserva.collected ? 'green' : 'red'}"
+            style="margin-left:5px"><ion-icon name="archive-outline"></ion-icon></ion-badge>
           <ion-label (click)="setModalOpen(true, reserva)">
             <h2>{{reserva.user}}</h2>
           </ion-label>
@@ -90,6 +93,11 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed" style="margin:20px;">
+    <ion-fab-button (click)="startScan()">
+      <ion-icon name="scan-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
 
 <ion-modal [isOpen]="isModalOpen">
@@ -121,7 +129,7 @@
       </ion-item>
       <ion-item>
         <ion-icon name="prayer-outline" slot="start"></ion-icon>
-        <ion-label>Total a pagar: {{reservaActual.paid ? 'Ya pagadao' : reservaActual.price}}</ion-label>
+        <ion-label>Total a pagar: {{reservaActual.paid ? 'Ya pagado' : reservaActual.price}}</ion-label>
       </ion-item>
       <ion-button expand="block" (click)="this.setAsPaid()" style="margin-top: 10px;"
         [disabled]="this.reservaActual.paid === true">Marcar como pagado</ion-button>

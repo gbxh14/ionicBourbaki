@@ -8,6 +8,8 @@ import { getFirestore } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment.prod';
 import { FirestoreService } from '../services/firebase.service';
 import { AvailableBooking } from '../models/availableBooking.model';
+import { add, cashOutline, logoIonic, archiveOutline } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
 
 @Component({
   selector: 'app-my-bookings',
@@ -26,12 +28,15 @@ export class MyBookingsPage implements OnInit {
   isModalOpen = false;
   reservaActual: any;
 
-  currentUserEmail = this.auth.currentUser?.email;
+  currentUserEmail = '';
 
   title = 'Mis pedidos';
   constructor(
     private firestoreService: FirestoreService,
-  ) { }
+  ) {
+    this.currentUserEmail = this.auth.currentUser?.email ?? '';
+    addIcons({ cashOutline, archiveOutline, logoIonic });
+  }
 
 
   ngOnInit() {
@@ -41,7 +46,7 @@ export class MyBookingsPage implements OnInit {
   getAllMyBookings() {
     this.firestoreService.getCollectionChanges<any[]>('Bookings').subscribe(result => {
       console.log(result);
-      console.log('Busca', this.currentUserEmail);
+      console.log('Busca', this.auth.currentUser?.email);
       let aux = result.filter(r => (r.type === 'shirt-booking' || r.type === 'bourbaki-food-booking'));
       aux = aux.filter(r => r.user === this.currentUserEmail);
       console.log(aux);

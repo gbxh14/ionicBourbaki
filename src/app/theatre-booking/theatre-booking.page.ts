@@ -61,6 +61,7 @@ export class TheatreBookingPage implements OnInit {
   myTickets: any[] = [];
 
   scanResult = '';
+  errorValidating = false;
 
   ticketsForm!: FormGroup;
 
@@ -74,7 +75,7 @@ export class TheatreBookingPage implements OnInit {
     this.buildTicketsForm();
     this.getAllTicketsBookings();
     this.getAllMyBookings();
-    NativeAudio.play({ assetId: "access-granted" });
+    this.errorValidating = false;
   }
 
   bookTickets() {
@@ -165,6 +166,7 @@ export class TheatreBookingPage implements OnInit {
             if (res.data()['validated'] === true) {
               console.log('La entrada ya ha sido validada');
               NativeAudio.play({ assetId: "access-denied" });
+              this.errorValidating = true;
             }
             else {
               // Actualizamos el documento: validadas = true

@@ -1,22 +1,24 @@
 import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonBreadcrumb, IonBreadcrumbs, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonSelect, IonSelectOption, IonInput, IonButton, IonToast, IonIcon, IonList, IonModal, IonButtons, IonBadge } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonBreadcrumb, IonBreadcrumbs, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonSelect, IonSelectOption, IonInput, IonButton, IonToast, IonIcon, IonList, IonModal, IonButtons, IonBadge, IonFab, IonFabButton } from '@ionic/angular/standalone';
 import { AvailableBooking } from '../models/availableBooking.model';
 import { FirestoreService } from '../services/firebase.service';
 import { addDoc, collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment.prod';
 import { initializeApp } from '@angular/fire/app';
 import { getAuth } from '@angular/fire/auth';
-import { add } from 'ionicons/icons';
+import { add, cashOutline, archiveOutline, scanOutline } from 'ionicons/icons';
 import { update } from '@angular/fire/database';
+import { addIcons } from 'ionicons';
+import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 
 @Component({
   selector: 'app-shirt-booking',
   templateUrl: './shirt-booking.page.html',
   styleUrls: ['./shirt-booking.page.scss'],
   standalone: true,
-  imports: [IonBadge, IonButtons, IonModal, IonList, IonIcon, IonToast, IonButton, ReactiveFormsModule, IonInput, IonLabel, IonSelect, IonSelectOption, IonItem, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonBreadcrumb, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonBreadcrumbs]
+  imports: [IonFabButton, IonFab, IonBadge, IonButtons, IonModal, IonList, IonIcon, IonToast, IonButton, ReactiveFormsModule, IonInput, IonLabel, IonSelect, IonSelectOption, IonItem, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonBreadcrumb, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonBreadcrumbs]
 })
 export class ShirtBookingPage implements OnInit {
 
@@ -37,13 +39,19 @@ export class ShirtBookingPage implements OnInit {
   isModalOpen = false;
   allShirtBookings: any[] = [];
   reservaActual: any;
+  allUserBookings: any[] = [];
+
+  scanResult = '';
+  errorValidating = false;
 
   bookingForm!: FormGroup;
   filterForm!: FormGroup;
 
   constructor(
     private firestoreService: FirestoreService,
-  ) { }
+  ) {
+    addIcons({ cashOutline, archiveOutline, scanOutline });
+  }
 
   ngOnInit() {
     if (this.currentUserEmail !== 'admin@admin.es') {
@@ -100,6 +108,7 @@ export class ShirtBookingPage implements OnInit {
   }
 
   setAsPaid() {
+    this.reservaActual.paid = true;
     console.log('Reserva actual', this.reservaActual.id);
     let id = this.reservaActual.id;
     getDoc(doc(this.db, 'Bookings', `reserva_camisetas_${id}`)).then(res => {
@@ -115,6 +124,7 @@ export class ShirtBookingPage implements OnInit {
   }
 
   setAsCollected() {
+    this.reservaActual.collected = true;
     console.log('Reserva actual', this.reservaActual.id);
     let id = this.reservaActual.id;
     getDoc(doc(this.db, 'Bookings', `reserva_camisetas_${id}`)).then(res => {
@@ -166,6 +176,63 @@ export class ShirtBookingPage implements OnInit {
       this.getAllShirtBookings();
     }
   }
+
+  // CÓDIGO PARA EL ESCANEO DE QR
+  async checkPermission() {
+    try {
+      const status = await BarcodeScanner.checkPermission({ force: true });
+      if (status.granted) {
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  }
+
+  async startScan() {
+    console.log('Starting scan');
+    try {
+      const permission = await this.checkPermission();
+      if (!permission) {
+        return;
+      }
+      await BarcodeScanner.hideBackground();
+      const body = document.querySelector('body');
+      if (body) {
+        body.classList.add('scanner-active');
+      }
+      const result = await BarcodeScanner.startScan();
+      console.log('Scanned', result);
+      if (result.hasContent) {
+        this.scanResult = result.content;
+        // Aquí se puede hacer algo con el resultado del escaneo
+        // Si el escaneo ha ido bien, me devuelve el email del usuario
+
+        // Busco las reservas asociadas a ese email
+        this.allShirtBookings = this.allShirtBookings.filter(booking => booking.user === this.scanResult);
+        BarcodeScanner.showBackground();
+        document.querySelector('body')?.classList.remove('scanner-active');
+        console.log('Scan result', this.scanResult);
+      }
+    } catch (err) {
+      console.error(err);
+      this.stopScan();
+    }
+  }
+
+  stopScan() {
+    BarcodeScanner.showBackground();
+    BarcodeScanner.stopScan().then(() => {
+      const body = document.querySelector('body');
+      if (body) {
+        body.classList.remove('scanner-active');
+      }
+    });
+  }
+
+
 
   private calculatePrice() {
     const cantidad = this.bookingForm.get('quantity')?.value;

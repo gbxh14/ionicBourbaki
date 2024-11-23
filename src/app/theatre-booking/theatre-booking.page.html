@@ -45,9 +45,7 @@
     <ion-card>
       <ion-card-content>
         <h6 class="info">Ya has reservado tus entradas</h6>
-        <div class="links">
-          <a href="my-tickets">Ver mis entradas</a>
-        </div>
+        <h6 class="info">Revisa tus entradas en <strong>Mis entradas</strong></h6>
       </ion-card-content>
     </ion-card>
   </div>
@@ -59,6 +57,9 @@
     Entradas reservadas por {{this.scanResult}}:
     <p style="font-size: 40px;">{{this.totalTicketsOfUser}}</p>
   </div>
+  @if(this.errorValidating){
+  <h2 class="info" style="color:red">Las entradas ya han sido validadas</h2>
+  }
   }
   <ion-fab vertical="bottom" horizontal="start" slot="fixed" style="margin:20px;">
     <ion-fab-button (click)="startScan()">
